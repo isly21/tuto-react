@@ -41,6 +41,7 @@ rechercherTous = (bdd = "mydb", collection = "customers") => {
           if (err) throw err;
           console.log(result);
           db.close();
+          return result;
         });
       });
 }
