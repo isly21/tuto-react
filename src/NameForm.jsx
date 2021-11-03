@@ -1,17 +1,32 @@
 import React from 'react';
 import axios from 'axios';
-import useFetch from 'react-fetch-hook';
+import { useEffect, useState } from 'react';
+import { render } from '@testing-library/react';
 
+
+
+const getItems = () => fetch("http://localhost:8080/posts").then(res => res.json());
+
+/*const [items, setItems] = useState();
+
+  useEffect(() => {
+    getItems().then(data => setItems(data));
+  }, []);*/ 
 
 class NameForm extends React.Component {
+
+ 
     constructor(props) {
+      
       super(props);
-      this.state = {value: ''};
+     
   
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
     }
-  
+    
+    
+
     handleChange(event) {
       this.setState({value: event.target.value});
     }
@@ -23,28 +38,90 @@ class NameForm extends React.Component {
     
     //récupère les données d'une url avec axios
     fetchData = () => {
-        return axios.get("https://randomuser.me/api/")
-              .then((response) => console.log(response.data));}
+        return axios
+                    .get(`http://localhost:8080/posts`,{ crossdomain: true })
+                    .then( (result) =>{
+                      this.setState({
+                        json: result.data   // ***
+                    });
+      })};
+    
+     
 
-    /*getData(){
-        var data = useFetch("https://randomuser.me/api/");
-        return data;
-        //console.log(data);
-    }*/
+   
+      
+
+
+      /*stockData = [
+        {
+          company: "Twitter Inc",
+          ticker: "TWTR",
+          stockPrice: "22.76 USD",
+          timeElapsed: "5 sec ago",
+        },
+        {
+          company: "Square Inc",
+          ticker: "SQ",
+          stockPrice: "45.28 USD",
+          timeElapsed: "10 sec ago",
+        }
+      ]*/
+
+
+      
+  
     render() {
-        //this.fetchData();
+      //var stockData = this.fetchData();
+      //console.log("type : "+typeof(this.stockData));
         //var data = { a: 1, b: 2 };
+        console.log("get item : "+getItems());
+        var stockData = getItems();
       return (
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Nom :
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
-          </label>
-          <input type="submit" value="Envoyer" />   
-          <div><pre>{JSON.stringify(this.getData()) }</pre></div>
-        </form>
+        <div>
+          <form onSubmit={this.handleSubmit}>
+            <label>
+              Nom :
+              
+            </label>
+            <input type="submit" value="Envoyer" />   
+          </form>
+          
+          
+          
+        </div>
+        
       );
     }
   }
 
   export default  NameForm;
+
+  function GetData(){
+
+    const [items, setItems] = useState([]);
+
+    const fetchItems = async () => {
+      try {
+        const data = await fetch("http://localhost:8080/posts");
+        const items = await data.json();
+        // console.log("HELLO FROM INSIDE OF FETCHITEMS", items);
+        setItems(items);
+        console.log("getData : "+items);
+      } catch (error) {
+        console.error(error);
+      }
+      
+        return 
+        (
+          <div>
+            
+            {items.map((item, index) => (
+              <h1 key={index}>{item}</h1>
+            ))}
+          </div>
+        );
+      
+
+  };
+
+  }
