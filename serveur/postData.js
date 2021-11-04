@@ -2,6 +2,8 @@ const express = require('express')
 
 const mongoose = require('mongoose')
 
+var cors = require('cors');
+
 mongoose.Promise = global.Promise;
 
 var app = express()
@@ -11,6 +13,8 @@ mongoose.connect('mongodb://localhost/nodemongo');
 const User = require('./models/User');
 
 var bodyParser = require('body-parser');
+app.use(cors());
+
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
@@ -19,9 +23,16 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/post.html");
 });
 
+//app.options('/addname', cors())
 
-app.post("/addname", (req, res) => {
+app.post("/addname", cors(),(req, res) => {
+
+
+    res.set('Access-Control-Allow-Origin', '*');
+
+
     var myData = new User(req.body);
+    console.log("mydata : "+myData.nom);
     myData.save()
     .then(item => {
     res.send("item saved to database");
@@ -30,6 +41,12 @@ app.post("/addname", (req, res) => {
     res.status(400).send("unable to save to database");
     });
    });
+
+
+//app.options("*", cors({ origin: 'http://localhost:8000', optionsSuccessStatus: 200 }));
+
+//app.use(cors({ origin: "http://localhost:8080", optionsSuccessStatus: 200 }));
+
 app.listen(port, () => {
  console.log("Server listening on port " + port);
 });

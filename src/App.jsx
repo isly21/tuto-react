@@ -6,6 +6,10 @@ import About from './About';
 import Contact from './Contact';
 import NameForm from './NameForm';
 import './index.css';
+import PersonList from './PersonList';
+
+
+
 var ReactCSSTransitionGroup = require('react-addons-css-transition-group');
 
 
@@ -37,8 +41,8 @@ class App extends React.Component {
            </Switch>
          </div>
          </Router>
-         <NameForm/>
-         
+        <NameForm/>
+        
         
          
       </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { render } from '@testing-library/react';
+
 
 
 
@@ -19,10 +18,14 @@ class NameForm extends React.Component {
     constructor(props) {
       
       super(props);
-     
+      //  console.log("get item : "+ this.fetchData());
   
       this.handleChange = this.handleChange.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      //this.res =  JSON.parse(JSON.stringify(Object.assign({},this.getUser())));  
+      this.state =({
+        name: ''
+      })
     }
     
     
@@ -31,27 +34,43 @@ class NameForm extends React.Component {
       this.setState({value: event.target.value});
     }
   
-    handleSubmit(event) {
-      alert('Le nom a été soumis : ' + this.state.value);
+    handleSubmit = event => {
       event.preventDefault();
+  
+      const user = {
+        name: this.state.name
+      };
+  
+      axios.post(`http://localhost:8080/addname`, { user })
+        .then(res => {
+          console.log("res : "+res);
+          console.log(res.data);
+        })
+    }
+
+    
+
+    //récupère les données d'une url avec axios
+     fetchData = async () => {
+      const { data } = await axios.get('http://localhost:8080/posts')
+        this.setState({posts: data, isLoading: false})
+        console.log("fetch data "+this.state.posts)
+                    
+        };
+
+
+    getUser = async () => 
+    {
+
+      try {
+        const response = await axios.get('http://localhost:8080/posts');
+        console.log("getUser : "+response);
+        return response;
+      } catch (error) {
+        console.error(error);
+      }
     }
     
-    //récupère les données d'une url avec axios
-    fetchData = () => {
-        return axios
-                    .get(`http://localhost:8080/posts`,{ crossdomain: true })
-                    .then( (result) =>{
-                      this.setState({
-                        json: result.data   // ***
-                    });
-      })};
-    
-     
-
-   
-      
-
-
       /*stockData = [
         {
           company: "Twitter Inc",
@@ -67,61 +86,44 @@ class NameForm extends React.Component {
         }
       ]*/
 
-
-      
+      onSubmit = (e) => {
+        e.preventDefault();
+        // get our form data out of state
+        const { nom } = this.state;
+    
+        axios.post('http://localhost:8080/addname', {
+          nom: this.state.nom
+        })
+      }
   
     render() {
       //var stockData = this.fetchData();
       //console.log("type : "+typeof(this.stockData));
-        //var data = { a: 1, b: 2 };
-        console.log("get item : "+getItems());
-        var stockData = getItems();
+      //console.log(this.fetchData());
+      
+        //var stockData = getItems();
       return (
         <div>
           <form onSubmit={this.handleSubmit}>
-            <label>
-              Nom :
-              
-            </label>
-            <input type="submit" value="Envoyer" />   
-          </form>
+          <label>
+            Person Name:
+            <input type="text" name="nom" onChange={this.handleChange} />
+          </label>
+          <button type="submit">Add</button>
+        </form>
+          
           
           
           
         </div>
         
       );
+      
     }
   }
 
   export default  NameForm;
 
-  function GetData(){
-
-    const [items, setItems] = useState([]);
-
-    const fetchItems = async () => {
-      try {
-        const data = await fetch("http://localhost:8080/posts");
-        const items = await data.json();
-        // console.log("HELLO FROM INSIDE OF FETCHITEMS", items);
-        setItems(items);
-        console.log("getData : "+items);
-      } catch (error) {
-        console.error(error);
-      }
-      
-        return 
-        (
-          <div>
-            
-            {items.map((item, index) => (
-              <h1 key={index}>{item}</h1>
-            ))}
-          </div>
-        );
-      
-
-  };
-
-  }
+  /*{this.res.map(item => {
+    return <li>{item.title}</li>;
+})} */

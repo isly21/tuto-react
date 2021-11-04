@@ -28,7 +28,7 @@ app.get('/', function (req, res) {
 // Initialize app
 const router = express.Router();
 
-var port = 8080;
+var port = 8081;
 // Start server with port 3000
 
 
@@ -54,9 +54,9 @@ app.get('/posts', (req, res) => {
     });
     })
 
-    app.options("*", cors({ origin: 'http://localhost:8000', optionsSuccessStatus: 200 }));
+app.options("*", cors({ origin: 'http://localhost:8000', optionsSuccessStatus: 200 }));
 
-    app.use(cors({ origin: "http://localhost:8080", optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "http://localhost:8080", optionsSuccessStatus: 200 }));
 //app.use('/posts', posts);
 
 app.listen(port, function(){
