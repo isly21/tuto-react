@@ -13,8 +13,12 @@ mongoose.connect('mongodb://localhost/nodemongo');
 const User = require('./models/User');
 
 var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 app.use(cors());
 
+router = express.Router();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json())
@@ -24,6 +28,19 @@ app.get("/", (req, res) => {
 });
 
 //app.options('/addname', cors())
+
+app.post('/create',(req, res, next) => {
+    User.create(req.body, (error, data) => {
+        res.set('Access-Control-Allow-Origin', '*');
+        console.log("data : "+req.body.nom)
+        if (error) {
+            return next(error)
+        } else {
+            console.log("data : "+data)
+            res.json(data)
+        }
+    })
+});
 
 app.post("/addname", cors(),(req, res) => {
 
@@ -38,7 +55,7 @@ app.post("/addname", cors(),(req, res) => {
     res.send("item saved to database");
     })
     .catch(err => {
-    res.status(400).send("unable to save to database");
+    //res.status(400).send("unable to save to database");
     });
    });
 
